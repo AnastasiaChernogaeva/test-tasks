@@ -80,14 +80,18 @@ const App = () => {
   };
 
   const changeTaskStatus = (id: Task['id']) => {
-    const newTaskStatus = tasks.map((task) => {
+    setTasks(tasks.map((task) => {
       if (task.id === id) {
         return { ...task, taskStatus: !task.taskStatus };
       }
       return task;
-    })
-    setTasks(newTaskStatus);
-    setAllTasks(newTaskStatus);
+    }));
+    setAllTasks(allTasks.map((task) => {
+      if (task.id === id) {
+        return { ...task, taskStatus: !task.taskStatus };
+      }
+      return task;
+    }));
   };
 
   const updateAmount = () =>  {   
