@@ -11,7 +11,7 @@ type Task = {
     order: number;
 };
 
-const DEFAULT_TASK = { order: 0, id: 0 };
+const DEFAULT_TASK = {  id: 0, order: 0 };
 
 interface MainProps {    
     tasks: Array<Task>;
@@ -26,7 +26,7 @@ const Main: FC<MainProps> = ({
     changeTaskStatus,
     setTasksOrder
 }) => {
-    const [currentTask, setCurrentTask] = useState({id: 0, order: 0});
+    const [currentTask, setCurrentTask] = useState(DEFAULT_TASK);
 
 
     const dragStartHandler = (e: DragEvent<HTMLDivElement>, task: Task) => {
