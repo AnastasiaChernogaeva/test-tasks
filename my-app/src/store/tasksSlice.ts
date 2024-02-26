@@ -71,6 +71,8 @@ const taskSlice = createSlice({
         searchTask(state, action) {
             if (state.tasks.length)
             state.tasks = state.tasks.filter(task => task.taskName.toLowerCase().includes(action.payload.searchText.toLowerCase()));
+            if (!action.payload.searchText) 
+            state.tasks = state.allTasks;
         },
         filterTasks(state, action) {
             switch (action.payload.filterType) {
@@ -86,21 +88,25 @@ const taskSlice = createSlice({
               }
         },
         updateTasksOrder(state, action) {
-            state.tasks = state.tasks.map(task => {
-                if (task.id === action.payload.dropTask.id) {
-                    return {...task, order: action.payload.currentTask.order};
-                }
-                if (task.id === action.payload.currentTask.id) {
-                    return {...task, order: action.payload.dropTask.order};
-                }
-                return task;
-            }).sort((a, b) => {
-                if (a.order > b.order) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-            });
+            const changeOrder = (arrTask: Array<Task>) => {
+                return arrTask.map(task => {
+                    if (task.id === action.payload.dropTask.id) {
+                        return {...task, order: action.payload.currentTask.order};
+                    }
+                    if (task.id === action.payload.currentTask.id) {
+                        return {...task, order: action.payload.dropTask.order};
+                    }
+                    return task;
+                }).sort((a, b) => {
+                    if (a.order > b.order) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                });
+            }
+            state.tasks = changeOrder(state.tasks);
+            state.allTasks = changeOrder(state.allTasks);
         },
         updateAmount(state) {
             state.amountCompletedTasks = state.tasks.filter((task) => task.taskStatus && task).length;
