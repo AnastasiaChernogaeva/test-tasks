@@ -70,17 +70,17 @@ const taskSlice = createSlice({
         },
         searchTask(state, action) {
             if (state.tasks.length)
-            state.tasks = state.tasks.filter(task => task.taskName.toLowerCase().includes(action.payload.searchText.toLowerCase()));
+            state.tasks = state.allTasks.filter(task => task.taskName.toLowerCase().includes(action.payload.searchText.toLowerCase()));
             if (!action.payload.searchText) 
             state.tasks = state.allTasks;
         },
         filterTasks(state, action) {
             switch (action.payload.filterType) {
                 case "Done":
-                  state.tasks = state.tasks.filter((task) => task.taskStatus);
+                  state.tasks = state.allTasks.filter((task) => task.taskStatus);
                   break;
                 case "Undone":
-                  state.tasks = state.tasks.filter((task) => !task.taskStatus);
+                  state.tasks = state.allTasks.filter((task) => !task.taskStatus);
                   break;
                 default:
                     state.tasks = state.allTasks
