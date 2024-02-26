@@ -1,31 +1,50 @@
 import { Container, Paper, Typography, Box, Grid, IconButton, Tooltip, Switch, Stack }  from '@mui/material';
 import DeleteOutlinedIcon  from '@mui/icons-material/DeleteOutlined';
-import { FC } from 'react';
+import { FC, DragEvent } from 'react';
 
 type Task = {
     id: number;
     taskName: string;
     taskDescription: string;
     taskStatus: boolean;
+    order: number;
 }; 
 
 interface TaskProps {
     task: Task;
     deleteTask: (id: Task['id']) => void;
     changeTaskStatus: (id: Task['id']) => void;
+    dragStartHandler: (e: DragEvent<HTMLDivElement>, task: Task) => void;
+    dragEndHandler: (e: DragEvent<HTMLDivElement>) => void; 
+    dragOverHandler: (e: DragEvent<HTMLDivElement>) => void;
+    dropHandler: (e: DragEvent<HTMLDivElement>, task: Task) => void;
 }
      
   
 const TaskItem: FC<TaskProps> = ({
     task,
     deleteTask,
-    changeTaskStatus
+    changeTaskStatus,
+    dragStartHandler,
+    dragEndHandler,
+    dragOverHandler,
+    dropHandler,
   }) =>{
   return (
      <div>
         <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
-        <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
-            <Grid container spacing={2}>                    
+        <Paper 
+            variant="outlined" 
+            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}        
+            onDragStart={(e) => dragStartHandler(e, task)}
+            onDragLeave={(e) => dragEndHandler(e)}
+            onDragEnd={(e) => dragEndHandler(e)}
+            onDragOver={(e) => dragOverHandler(e)}
+            onDrop={(e) => dropHandler(e, task)}
+            draggable={true} 
+            className="grab"
+        >
+            <Grid container spacing={2}>                   
                 <Grid item xs={12}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex'}}>
                         <Typography component="h1" variant="h6" align="left" sx={{ flex: 1 }}>

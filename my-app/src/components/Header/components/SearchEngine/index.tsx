@@ -18,6 +18,7 @@ type Task = {
     taskName: string;
     taskDescription: string;
     taskStatus: boolean;
+    order: number;
 };
 
 
@@ -26,7 +27,7 @@ interface SearchEngineProps {
     countUncompletedTasks: number; 
     addMode: boolean;
     setMode: (value: boolean) => void;
-    addTask: ({ taskName, taskDescription }: Omit<Task, 'id' | 'taskStatus'>) => void;
+    addTask: ({ taskName, taskDescription }: Omit<Task, 'id' | 'taskStatus' | 'order'>) => void;
     searchTask: (searchText: string, filterType: string) => void;
     filterTask: (filterType: string) => void;
 }

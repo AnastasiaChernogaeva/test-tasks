@@ -5,14 +5,15 @@ import { useEffect, useState } from 'react';
 import './App.css';
 
 const DEFAULT_TODO_LIST = [
-  { id: 1, taskName: 'Задача 1', taskDescription: 'Описание 1', taskStatus: false },
-  { id: 2, taskName: 'Задача 2', taskDescription: 'Описание 2', taskStatus: false },
+  { id: 1, taskName: 'Задача 1', taskDescription: 'Описание 1', taskStatus: false, order: 1 },
+  { id: 2, taskName: 'Задача 2', taskDescription: 'Описание 2', taskStatus: false, order: 2 },
   {
     id: 3,
     taskName: 'Задача 3',
     taskDescription:
       'Такое длинное описание задачи 3 такое длинное описание задачи 3 такое длинное описание задачи 3 такое длинное описание задачи 3 ',
-    taskStatus: true
+    taskStatus: true, 
+    order: 3
   }
 ];
 
@@ -21,12 +22,12 @@ type Task = {
   taskName: string;
   taskDescription: string;
   taskStatus: boolean;
+  order: number;
 };
 
 const App = () => {
   const [allTasks, setAllTasks] = useState(DEFAULT_TODO_LIST);
   const [tasks, setTasks] = useState(allTasks);
-
   const [amountCompletedTasks, setAmountCompletedTasks] = useState<number>(0);
   const [amountUncompletedTasks, setAmountUncompletedTasks] = useState<number>(0);
   
@@ -43,8 +44,8 @@ const App = () => {
     setAllTasks(newTaskList);
   };
 
-  const addTask = ({ taskName, taskDescription }: Omit<Task, 'id' | 'taskStatus'>) => {
-    const newTasks = allTasks.length ? [ { id: allTasks[allTasks.length-1].id + Math.random(), taskDescription, taskName, taskStatus: false }, ...allTasks] : [{ id: 1, taskDescription, taskName, taskStatus: false }];
+  const addTask = ({ taskName, taskDescription }: Omit<Task, 'id' | 'taskStatus' | 'order'>) => {
+    const newTasks = allTasks.length ? [ ...allTasks, { id: allTasks[allTasks.length-1].id + Math.random(), taskDescription, taskName, taskStatus: false, order: allTasks.length+1 }] : [{ id: 1, taskDescription, taskName, taskStatus: false, order: 1}];
     setTasks(newTasks);
     setAllTasks(newTasks);
     setMode(false);
@@ -103,6 +104,22 @@ const App = () => {
     );
   };
 
+  const updateTasksOrder = (currentTask: Omit<Task, 'taskName' | 'taskStatus' | 'taskDescription'>, dropTask: Task) => {
+    const changeOrder = (tasks: Array<Task>) => {
+      return tasks.map( t => {
+        if (t.id === dropTask.id) {
+            return {...t, order: currentTask.order};
+        }
+        if (t.id === currentTask.id) {
+            return {...t, order: dropTask.order};
+        }
+        return t;
+      });
+    };
+    setAllTasks(changeOrder(allTasks));
+    setTasks(changeOrder(tasks));
+  };
+
   return (
     <div className="App">
       <Container maxWidth="sm">
@@ -122,6 +139,7 @@ const App = () => {
                 tasks={tasks}
                 deleteTask={deleteTask}
                 changeTaskStatus={changeTaskStatus}
+                setTasksOrder={updateTasksOrder}
               />
               }
           </Card>

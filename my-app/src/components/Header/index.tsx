@@ -8,6 +8,7 @@ type Task = {
     taskName: string;
     taskDescription: string;
     taskStatus: boolean;
+    order: number;
 };
 
 interface HeaderProps {
@@ -15,7 +16,7 @@ interface HeaderProps {
     countUncompletedTasks: number;
     addMode: boolean;
     setMode: (value: boolean) => void;
-    addTask: ({ taskName, taskDescription }: Omit<Task, 'id' | 'taskStatus'>) => void;
+    addTask: ({ taskName, taskDescription }: Omit<Task, 'id' | 'taskStatus' | 'order'>) => void;
     searchTask: (text: string, filterType: string) => void;
     filterTask: (type: string) => void;
 }

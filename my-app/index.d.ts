@@ -4,4 +4,5 @@ type Task = {
     taskName: string;
     taskDescription: string;
     taskStatus: boolean;
+    order: number;
 };

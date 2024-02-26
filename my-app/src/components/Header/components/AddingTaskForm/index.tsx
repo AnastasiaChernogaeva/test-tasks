@@ -1,24 +1,25 @@
 import { Container, Button, Paper, Typography, Box, IconButton, Tooltip, TextField, Grid }  from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { useState, FC } from 'react';
+import { useState, FC, ChangeEvent } from 'react';
 
 type Task = {
     id: number;
     taskName: string;
     taskDescription: string;
     taskStatus: boolean;
+    order: number;
 };
 
 const DEFAULT_TASK = { taskName: '', taskDescription: '' };
 
 interface AddingTaskFormProps {
     setMode: (value: boolean) => void
-    addTask: ({ taskName, taskDescription }: Omit<Task, 'id' | 'taskStatus'>) => void;
+    addTask: ({ taskName, taskDescription }: Omit<Task, 'id' | 'taskStatus' | 'order'>) => void;
 }
 
 const AddingTaskForm: FC<AddingTaskFormProps> = ({setMode, addTask}) => {
     const [task, setTask] = useState(DEFAULT_TASK); 
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { value, name } = event.target;
         setTask({ ...task, [name]: value });
     };
