@@ -39,13 +39,12 @@ const App = () => {
 
 
   const deleteTask = (id: Task['id']) => {
-    const newTaskList = tasks.filter((task) => task.id !== id);
-    setTasks(newTaskList);
-    setAllTasks(newTaskList);
+    setTasks(tasks.filter((task) => task.id !== id));
+    setAllTasks(allTasks.filter((task) => task.id !== id));
   };
 
   const addTask = ({ taskName, taskDescription }: Omit<Task, 'id' | 'taskStatus' | 'order'>) => {
-    const newTasks = allTasks.length ? [ ...allTasks, { id: allTasks[allTasks.length-1].id + Math.random(), taskDescription, taskName, taskStatus: false, order: allTasks.length+1 }] : [{ id: 1, taskDescription, taskName, taskStatus: false, order: 1}];
+    const newTasks = allTasks.length ? [ ...allTasks, { id: allTasks[allTasks.length-1].id + Math.random(), taskDescription, taskName, taskStatus: false, order: Math.max.apply(null, allTasks.map(el => el.order)) +1 }] : [{ id: 1, taskDescription, taskName, taskStatus: false, order: 1}];
     setTasks(newTasks);
     setAllTasks(newTasks);
     setMode(false);
@@ -105,7 +104,7 @@ const App = () => {
   };
 
   const updateTasksOrder = (currentTask: Omit<Task, 'taskName' | 'taskStatus' | 'taskDescription'>, dropTask: Task) => {
-    const changeOrder = (tasks: Array<Task>) => {
+        const changeOrder = (tasks: Array<Task>) => {
       return tasks.map( t => {
         if (t.id === dropTask.id) {
             return {...t, order: currentTask.order};
