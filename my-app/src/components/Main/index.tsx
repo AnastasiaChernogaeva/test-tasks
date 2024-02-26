@@ -2,6 +2,8 @@ import { FC, DragEvent, useState } from 'react';
 import TaskItem from "./components/Task";
 import Typography from '@mui/material/Typography';
 import { Box, Container} from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateTasksOrder } from '../../store/tasksSlice';
 
 type Task = {
     id: number;
@@ -11,22 +13,13 @@ type Task = {
     order: number;
 };
 
-const DEFAULT_TASK = {  id: 0, order: 0 };
 
-interface MainProps {    
-    tasks: Array<Task>;
-    deleteTask: (id:  Task['id']) => void;
-    changeTaskStatus: (id:  Task['id']) => void;
-    setTasksOrder: (currentTask: Omit<Task, 'taskName' | 'taskStatus' | 'taskDescription'>, dropTask: Task ) => void;
-}
-
-const Main: FC<MainProps> = ({ 
-    tasks, 
-    deleteTask, 
-    changeTaskStatus,
-    setTasksOrder
-}) => {
-    const [currentTask, setCurrentTask] = useState(DEFAULT_TASK);
+const Main: FC = () => {
+    const defaultTask = useSelector((state: any) => state.tasks.default_task);
+    const tasks = useSelector((state: any) => state.tasks.tasks);
+    const dispatch = useDispatch();
+    const setTasksOrder = (currentTask: Task, dropTask: Task) => dispatch(updateTasksOrder({currentTask, dropTask}))
+    const [currentTask, setCurrentTask] = useState(defaultTask);
 
 
     const dragStartHandler = (e: DragEvent<HTMLDivElement>, task: Task) => {
@@ -48,25 +41,16 @@ const Main: FC<MainProps> = ({
         e.currentTarget.style.background ='white';
     };
 
-    const sortTasks = (a: Task, b: Task) => {
-        if (a.order > b.order) {
-            return 1;
-        } else {
-            return -1;
-        }
-    };
 
  return (
     <div className="header">
         <Box>
             <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
                 { tasks.length ? 
-                    tasks.sort(sortTasks).map((task) => 
+                    tasks.map((task: Task) => 
                             <TaskItem
                                 key={task.id}
                                 task={task}
-                                deleteTask={deleteTask}
-                                changeTaskStatus={changeTaskStatus}
                                 dragStartHandler={dragStartHandler}
                                 dragEndHandler={dragEndHandler}
                                 dragOverHandler={dragOverHandler}

@@ -11,25 +11,7 @@ type Task = {
     order: number;
 };
 
-interface HeaderProps {
-    countCompletedTasks: number;
-    countUncompletedTasks: number;
-    addMode: boolean;
-    setMode: (value: boolean) => void;
-    addTask: ({ taskName, taskDescription }: Omit<Task, 'id' | 'taskStatus' | 'order'>) => void;
-    searchTask: (text: string, filterType: string) => void;
-    filterTask: (type: string) => void;
-}
-
-const Header: FC<HeaderProps> = ({ 
-    countCompletedTasks, 
-    countUncompletedTasks, 
-    addTask, 
-    searchTask,
-    filterTask,
-    addMode,
-    setMode
-}) => {
+const Header: FC = () => { 
  return (
     <div className="header">
         <Box>
@@ -37,15 +19,7 @@ const Header: FC<HeaderProps> = ({
                 <Typography variant="h4" gutterBottom>
                     Задачи
                 </Typography>
-                <SearchEngine 
-                    countCompletedTasks={countCompletedTasks} 
-                    countUncompletedTasks={countUncompletedTasks} 
-                    addTask={addTask} 
-                    searchTask={searchTask}
-                    filterTask={filterTask} 
-                    addMode={addMode}
-                    setMode={setMode}
-                />
+                <SearchEngine/>
             </Container>
         </Box> 
     </div>

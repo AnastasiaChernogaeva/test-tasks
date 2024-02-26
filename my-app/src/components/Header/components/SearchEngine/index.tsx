@@ -13,6 +13,9 @@ import MenuItem from '@mui/material/MenuItem';
 
 import { Typography, Container } from '@mui/material';
 
+import { useSelector, useDispatch } from "react-redux";
+import {filterTasks, searchTask, setAddingMode} from '../../../../store/tasksSlice';
+
 type Task = {
     id: number;
     taskName: string;
@@ -22,43 +25,31 @@ type Task = {
 };
 
 
-interface SearchEngineProps {
-    countCompletedTasks: number; 
-    countUncompletedTasks: number; 
-    addMode: boolean;
-    setMode: (value: boolean) => void;
-    addTask: ({ taskName, taskDescription }: Omit<Task, 'id' | 'taskStatus' | 'order'>) => void;
-    searchTask: (searchText: string, filterType: string) => void;
-    filterTask: (filterType: string) => void;
-}
 
-const SearchEngine: FC<SearchEngineProps> = ({
-    countCompletedTasks, 
-    countUncompletedTasks, 
-    addTask, 
-    searchTask,
-    filterTask,
-    addMode,
-    setMode,
-  }) =>{   
-  const [filterType, setFilterType] = useState<string>('All');
+const SearchEngine: FC = () => {
+  const amountCompletedTasks = useSelector((state: any) => state.tasks.amountCompletedTasks);
+  const amountUncompletedTasks = useSelector((state: any) => state.tasks.amountUncompletedTasks);
+  const addMode = useSelector((state: any) => state.tasks.addingMode);
+  const dispatch = useDispatch();
+
+  // const [filterType, setFilterType] = useState<string>('All');
   const [searchText, setSearchText] = useState<string>('');
 
   const onChange = (text: string) => {
-    searchTask(text, filterType);
+    dispatch(searchTask({searchText: text}));
     setSearchText(text);
   };
 
   const onClick = () => {
-    searchTask(searchText, filterType);
+    dispatch(searchTask({searchText: searchText}));
   };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   
   const handleClose = (type: string) => {
-    filterTask(type);
-    setFilterType(type);
+    dispatch(filterTasks({filterType: type}));
+    // setFilterType(type);
     setAnchorEl(null);
   };
   
@@ -103,24 +94,20 @@ const SearchEngine: FC<SearchEngineProps> = ({
         </IconButton>
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
         <IconButton color="primary" sx={{ p: '10px' }} aria-label="add" disabled={addMode}>
-            <AddOutlined  onClick={()=>setMode(true)} />
+            <AddOutlined  onClick={()=>dispatch(setAddingMode(true))} />
         </IconButton>
         </Paper>
         <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex'}}>
             <Typography component="h1" variant="subtitle1" align="left" sx={{ flex: 1 }}>
-               Выполнено: {countCompletedTasks}
+               Выполнено: {amountCompletedTasks}
             </Typography>
             <Typography component="h1" variant="subtitle1" align="right" sx={{ flex: -1 }}>
-              Не выполнено: {countUncompletedTasks}
+              Не выполнено: {amountUncompletedTasks}
             </Typography>
         </Box>
 
         <Box>        
-            {addMode && <AddingTaskForm
-                setMode={setMode}
-                addTask={addTask}
-                />
-            }
+            {addMode && <AddingTaskForm/>}
         </Box>
       </Container>
       </Box>

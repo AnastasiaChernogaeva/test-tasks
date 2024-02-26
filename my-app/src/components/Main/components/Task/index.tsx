@@ -1,6 +1,8 @@
 import { Container, Paper, Typography, Box, Grid, IconButton, Tooltip, Switch, Stack }  from '@mui/material';
 import DeleteOutlinedIcon  from '@mui/icons-material/DeleteOutlined';
 import { FC, DragEvent } from 'react';
+import { useDispatch } from 'react-redux';
+import {deleteTask, changeTaskStatus} from '../../../../store/tasksSlice'
 
 type Task = {
     id: number;
@@ -12,8 +14,6 @@ type Task = {
 
 interface TaskProps {
     task: Task;
-    deleteTask: (id: Task['id']) => void;
-    changeTaskStatus: (id: Task['id']) => void;
     dragStartHandler: (e: DragEvent<HTMLDivElement>, task: Task) => void;
     dragEndHandler: (e: DragEvent<HTMLDivElement>) => void; 
     dragOverHandler: (e: DragEvent<HTMLDivElement>) => void;
@@ -23,13 +23,15 @@ interface TaskProps {
   
 const TaskItem: FC<TaskProps> = ({
     task,
-    deleteTask,
-    changeTaskStatus,
     dragStartHandler,
     dragEndHandler,
     dragOverHandler,
     dropHandler,
   }) =>{
+    const dispatch = useDispatch();
+    const remove = (id: number) => dispatch(deleteTask({id}));
+    const changeStatus = (id: number) => dispatch(changeTaskStatus({id}));
+
   return (
      <div>
         <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
@@ -53,7 +55,7 @@ const TaskItem: FC<TaskProps> = ({
                         
                         <Stack direction="row" spacing={1} alignItems="center" auto-focus='none'>
                             <Typography auto-focus='none'>{task.taskStatus ? 'Выполнено' : 'Не выполнено'}</Typography>
-                            <Switch checked={task.taskStatus} onChange={() => changeTaskStatus(task.id)}/>
+                            <Switch checked={task.taskStatus} onChange={() => changeStatus(task.id)}/>
                         </Stack>
                     </Box>
                 </Grid>
@@ -62,13 +64,14 @@ const TaskItem: FC<TaskProps> = ({
                 </Grid>
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Tooltip title="Удалить" onClick={()=>deleteTask(task.id)}>
+            <Tooltip title="Удалить"
+                    onClick={()=>remove(task.id)}>
                 <IconButton 
                     color="error"
                     type="button" sx={{ p: '10px' }} aria-label="delete"
                     >
                     <DeleteOutlinedIcon
-                    onClick={()=>deleteTask(task.id)} />
+                        onClick={()=>remove(task.id)} />
                 </IconButton>
             </Tooltip>
             </Box>

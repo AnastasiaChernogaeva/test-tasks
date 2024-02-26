@@ -1,6 +1,8 @@
 import { Container, Button, Paper, Typography, Box, IconButton, Tooltip, TextField, Grid }  from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useState, FC, ChangeEvent } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { addTask, setAddingMode } from "../../../../store/tasksSlice";
 
 type Task = {
     id: number;
@@ -10,19 +12,16 @@ type Task = {
     order: number;
 };
 
-const DEFAULT_TASK = { taskName: '', taskDescription: '' };
 
-interface AddingTaskFormProps {
-    setMode: (value: boolean) => void
-    addTask: ({ taskName, taskDescription }: Omit<Task, 'id' | 'taskStatus' | 'order'>) => void;
-}
-
-const AddingTaskForm: FC<AddingTaskFormProps> = ({setMode, addTask}) => {
-    const [task, setTask] = useState(DEFAULT_TASK); 
+const AddingTaskForm: FC = () => {
+    const dispatch = useDispatch();    
+    const defaultTask = useSelector((state: any) => state.tasks.default_task);
+    const [task, setTask] = useState(defaultTask); 
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { value, name } = event.target;
         setTask({ ...task, [name]: value });
     };
+    const add = (task: Omit<Task, 'id' | 'taskStatus' | 'order' | 'id'>) => dispatch(addTask(task));
     
 
 return (
@@ -39,7 +38,7 @@ return (
                             <IconButton                   
                                 color="error" 
                                 type="button" sx={{ p: '10px'}} aria-label="close"
-                                onClick={() => setMode(false)}>
+                                onClick={() => dispatch(setAddingMode(false))}>
                                 <CancelIcon />
                             </IconButton>
                         </Tooltip>
@@ -75,7 +74,7 @@ return (
                     <Button
                     variant="contained"
                     disabled={!task.taskName}
-                    onClick={()=>addTask(task)}
+                    onClick={()=>add(task)}
                     sx={{ mt: 3, ml: 1 }}
                     > Создать задачу
                     </Button>
