@@ -1,19 +1,11 @@
 import Header from "./components/Header";
 import Main from "./components/Main/index";
 import { Container, Card, CardHeader } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { updateAmount } from "./store/tasksSlice";
 import './App.css';
 
-
-type Task = {
-  id: number;
-  taskName: string;
-  taskDescription: string;
-  taskStatus: boolean;
-  order: number;
-};
 
 const App = () => {
   const dispatch = useDispatch();
